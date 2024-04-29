@@ -7,11 +7,11 @@ import type { Multicallv2Typed, Multicallv3Typed } from '@pancakeswap/utils/abit
 import multicallAbi from './Multicall.json'
 
 export const multicallAddresses = {
-  1: '0xcA11bde05977b3631167028862bE2a173976CA11',
-  4: '0xcA11bde05977b3631167028862bE2a173976CA11',
-  5: '0xcA11bde05977b3631167028862bE2a173976CA11',
-  56: '0xcA11bde05977b3631167028862bE2a173976CA11',
-  97: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [ChainId.ETHEREUM]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [ChainId.GOERLI]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [ChainId.BSC]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [ChainId.BSC_TESTNET]: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  [ChainId.POLYGON]: "0xcA11bde05977b3631167028862bE2a173976CA11"
 }
 
 export const getMulticallContract = (chainId: ChainId, provider: Provider) => {

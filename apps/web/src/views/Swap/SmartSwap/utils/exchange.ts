@@ -15,6 +15,7 @@ export const SMART_ROUTER_ADDRESS: ChainMap<string> = {
   [ChainId.GOERLI]: '',
   [ChainId.BSC]: '0x64D74e1EAAe3176744b5767b93B7Bee39Cf7898F',
   [ChainId.BSC_TESTNET]: '0xCF457465fC0E98a50Bc3E1b3DDAAF1373622f059',
+  [ChainId.POLYGON]: '0xCF457465fC0E98a50Bc3E1b3DDAAF1373622f059',
 }
 
 export function useSmartRouterContract() {
@@ -42,14 +43,14 @@ export function computeTradePriceBreakdown(trade?: TradeWithStableSwap<Currency,
   const realizedLPFee = !trade
     ? undefined
     : ONE_HUNDRED_PERCENT.subtract(
-        trade.route.pairs.reduce<Fraction>(
-          (currentFee: Fraction, pair): Fraction =>
-            currentFee.multiply(
-              isStableSwapPair(pair) ? ONE_HUNDRED_PERCENT.subtract(pair.fee) : INPUT_FRACTION_AFTER_FEE,
-            ),
-          ONE_HUNDRED_PERCENT,
-        ),
-      )
+      trade.route.pairs.reduce<Fraction>(
+        (currentFee: Fraction, pair): Fraction =>
+          currentFee.multiply(
+            isStableSwapPair(pair) ? ONE_HUNDRED_PERCENT.subtract(pair.fee) : INPUT_FRACTION_AFTER_FEE,
+          ),
+        ONE_HUNDRED_PERCENT,
+      ),
+    )
 
   // remove lp fees from price impact
   const priceImpactWithoutFeeFraction =
@@ -92,10 +93,8 @@ export function formatExecutionPrice(
     return ''
   }
   return inverted
-    ? `${Trade.executionPrice(trade).invert().toSignificant(6)} ${trade.inputAmount.currency.symbol} / ${
-        trade.outputAmount.currency.symbol
-      }`
-    : `${Trade.executionPrice(trade).toSignificant(6)} ${trade.outputAmount.currency.symbol} / ${
-        trade.inputAmount.currency.symbol
-      }`
+    ? `${Trade.executionPrice(trade).invert().toSignificant(6)} ${trade.inputAmount.currency.symbol} / ${trade.outputAmount.currency.symbol
+    }`
+    : `${Trade.executionPrice(trade).toSignificant(6)} ${trade.outputAmount.currency.symbol} / ${trade.inputAmount.currency.symbol
+    }`
 }
