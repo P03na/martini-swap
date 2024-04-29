@@ -17,6 +17,8 @@ jobs:
           node-version: '18'
       - name: Install Typescript
         run: npm install -g typescript
+      - name: Install Vercel
+        run: npm install -g vercel
 
       - name: Install dependencies and build
         run: |
