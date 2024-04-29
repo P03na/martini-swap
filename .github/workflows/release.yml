@@ -1,37 +1,32 @@
-name: Release
-
+name: Vercel Staging Deployment
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_STAGING_PROJECT_ID }}
 on:
   push:
     branches:
-      - develop
-
-concurrency: ${{ github.workflow }}-${{ github.ref }}
-
+      - main
 jobs:
-  release:
-    name: Release
+  Deploy-Staging:
     runs-on: ubuntu-latest
-    if: github.repository == 'pancakeswap/pancake-frontend'
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js 16.x
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 16.x
+          node-version: '18'
+      - name: Install pnpm
+        run: npm install -g pnpm
+      - name: Install Typescript
+        run: npm install -g typescript
 
-      - name: Install Dependencies
-        run: yarn
-
-      - name: Create Release Pull Request or Publish to npm
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          title: "chore: Version Packages"
-          # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          publish: yarn release-packages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
+      - name: Install dependencies and build
+        run: |
+          pnpm install
+          pnpm run build
+      - name: Pull Vercel Environment Information
+        run: pnpm vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: pnpm vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy Project Artifacts to Vercel
+        run: pnpm vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
